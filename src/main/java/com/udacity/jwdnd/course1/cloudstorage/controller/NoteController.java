@@ -7,10 +7,7 @@ import com.udacity.jwdnd.course1.cloudstorage.services.UserService;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class NoteController {
@@ -36,7 +33,7 @@ public class NoteController {
         return "redirect:/result";
     }
 
-    @DeleteMapping("/notes/delete/{noteid}")
+    @GetMapping("/notes/delete/{noteid}")
     public String delete(@PathVariable("noteid") Integer noteId) {
         noteService.deleteNote(noteId);
         return "redirect:/result";
