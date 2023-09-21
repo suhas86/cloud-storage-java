@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
+@RequestMapping("/notes")
 public class NoteController {
     private UserService userService;
     private NoteService noteService;
@@ -18,7 +19,7 @@ public class NoteController {
         this.noteService = noteService;
     }
 
-    @PostMapping("/notes")
+    @PostMapping("/save")
     public String createOrUpdate(@ModelAttribute Note note, Model model, Authentication authentication) {
         User user = userService.getUser(authentication.getName());
 
@@ -33,7 +34,7 @@ public class NoteController {
         return "redirect:/result";
     }
 
-    @GetMapping("/notes/delete/{noteid}")
+    @GetMapping("/delete/{noteid}")
     public String delete(@PathVariable("noteid") Integer noteId) {
         noteService.deleteNote(noteId);
         return "redirect:/result";
