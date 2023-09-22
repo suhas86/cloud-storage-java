@@ -7,6 +7,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
 
 @Controller
 public class SignupController {
@@ -20,26 +22,27 @@ public class SignupController {
     }
 
     @PostMapping("/signup")
-    public String signupUser(@ModelAttribute("createUser") User user, Model model) {
+    public RedirectView signupUser(@ModelAttribute("createUser") User user, Model model, RedirectAttributes redirectAttributes) {
         String username = user.getUsername();
         String firstname = user.getFirstname();
         String lastname = user.getLastname();
         String password = user.getPassword();
-
+        RedirectView signUpRedirect = new RedirectView("/signup",true);
         if (username.isEmpty() || firstname.isEmpty() || lastname.isEmpty() || password.isEmpty()) {
             model.addAttribute("error", "All fields are mandatory");
         } else if (!userService.usernameIsAvailable(username)) {
-            model.addAttribute("error", "Username already exists");
+            redirectAttributes.addFlashAttribute("error", "Username already exists");
         } else {
             int rowAdded = userService.createUser(user);
             if (rowAdded < 0) {
-                model.addAttribute("error", "Oops something went wrong! Please try again");
+                redirectAttributes.addFlashAttribute("error", "Oops something went wrong! Please try again");
             } else {
-                model.addAttribute("success", true);
-                return "signup";
+                RedirectView redirectView = new RedirectView("/login",true);
+                redirectAttributes.addFlashAttribute("signupSuccess",true);
+                return redirectView;
             }
         }
 
-        return "signup";
+        return signUpRedirect;
     }
 }
